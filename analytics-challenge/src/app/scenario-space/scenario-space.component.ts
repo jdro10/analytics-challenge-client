@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 
 interface ScenarioSpace {
   value: string;
@@ -24,6 +25,7 @@ interface ScenarioSpace {
     FormsModule,
     CommonModule,
     SpinnerComponent,
+    MatButtonModule,
   ],
   templateUrl: './scenario-space.component.html',
   styleUrl: './scenario-space.component.css',
@@ -41,6 +43,7 @@ export class ScenarioSpaceComponent {
   ) {}
 
   scenarioSpaces: ScenarioSpace[] = [
+    { value: ' ', viewValue: ' ' },
     { value: 'default_2c', viewValue: 'CS_EUR (default_2c)' },
     { value: 'dvv_3a', viewValue: 'CS_EUR (dvv_3a)' },
     { value: 'chf_default_3a', viewValue: 'CS_CHF (chf_default_3a)' },
