@@ -9,6 +9,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { SimulationService } from '../services/simulation.service';
 
 interface ScenarioSpace {
   value: string;
@@ -41,6 +42,7 @@ export class ScenarioSpaceComponent {
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
+    private simulationService: SimulationService,
     public dialog: MatDialog
   ) {}
 
@@ -105,5 +107,11 @@ export class ScenarioSpaceComponent {
         this.isDialogOpen = false;
       });
     }
+  }
+
+  simulate(): void {
+    this.simulationService.performSimulation().subscribe((data) => {
+      console.log(data);
+    });
   }
 }

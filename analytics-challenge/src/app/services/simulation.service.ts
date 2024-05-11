@@ -5,15 +5,14 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class ScenarioSpaceService {
+export class SimulationService {
   apiUrl: string = environment.apiUrl;
   apiKey: string = environment.apiKey;
 
   constructor(public http: HttpClient) {}
 
-  getScenarioSpace(scenarioSpace: string) {
-    return this.http.get<any>(`${this.apiUrl}/scenarioSpaceSummary`, {
-      params: new HttpParams().set('scenarioSpace', scenarioSpace),
+  performSimulation() {
+    return this.http.post<any>(`${this.apiUrl}/simulations`, {
       headers: new HttpHeaders({
         'X-API-Key': this.apiKey,
       }),
