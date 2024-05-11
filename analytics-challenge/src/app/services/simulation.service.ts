@@ -1,3 +1,4 @@
+import { SimulationParametersRequest } from './../models/SimulationParametersRequest';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
@@ -10,7 +11,10 @@ export class SimulationService {
 
   constructor(public http: HttpClient) {}
 
-  performSimulation(assetsData: { [key: string]: number }) {
-    return this.http.post<any>(`${this.apiUrl}/simulation`, assetsData);
+  performSimulation(simulationParamters: SimulationParametersRequest) {
+    return this.http.post<any>(
+      `${this.apiUrl}/simulation`,
+      simulationParamters
+    );
   }
 }

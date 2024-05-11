@@ -39,7 +39,7 @@
         </div>
         }
 
-        @if(showLinearChart){
+        @if(showLinearChart && !loadingChart){
             <app-linear-chart [simulationData]="simulationData"></app-linear-chart>
         }
     </div>

@@ -20,7 +20,6 @@ export type ChartOptions = {
   grid: ApexGrid;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
-
 };
 
 @Component({
@@ -40,19 +39,19 @@ export class LinearChartComponent {
       series: [
         {
           name: 'Percentile 5',
-          data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10],
+          data: [],
         },
         {
           name: 'Percentile 50',
-          data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35],
+          data: [],
         },
         {
           name: 'Percentile 75',
-          data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47],
+          data: [],
         },
       ],
       theme: {
-        mode: "dark",
+        mode: 'dark',
       },
       chart: {
         height: 500,
@@ -73,24 +72,25 @@ export class LinearChartComponent {
       },
       grid: {
         row: {
-          colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+          colors: ['#f3f3f3', 'transparent'],
           opacity: 0.5,
         },
       },
 
       xaxis: {
-        categories: [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep',
-        ],
+        labels: {
+          show: false,
+        },
       },
     };
+  }
+
+  ngAfterViewInit(): void {
+    this.chartOptions.series[0].data =
+      this.simulationData.wealth.total.percentile75;
+    this.chartOptions.series[1].data =
+      this.simulationData.wealth.total.percentile50;
+    this.chartOptions.series[2].data =
+      this.simulationData.wealth.total.percentile5;
   }
 }

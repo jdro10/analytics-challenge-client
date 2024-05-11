@@ -11,6 +11,8 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SimulationService } from '../services/simulation.service';
 import { LinearChartComponent } from '../linear-chart/linear-chart.component';
+import { ScenarioSpaces } from '../models/ScenarioSpaces';
+import { SimulationParametersRequest } from './../models/SimulationParametersRequest';
 
 interface ScenarioSpace {
   value: string;
@@ -44,12 +46,18 @@ export class ScenarioSpaceComponent {
   simulationData: any;
   loadingChart: boolean = false;
   showLinearChart: boolean = false;
+  simulationParametersRequest: SimulationParametersRequest;
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
     private simulationService: SimulationService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.simulationParametersRequest = {
+      assetClasses: {},
+      scenarioSpace: '',
+    };
+  }
 
   scenarioSpaces: ScenarioSpace[] = [
     { value: ' ', viewValue: ' ' },
@@ -118,8 +126,15 @@ export class ScenarioSpaceComponent {
   simulate(): void {
     this.loadingChart = true;
 
+    this.simulationParametersRequest = {
+      assetClasses: this.assetsDictionary,
+      scenarioSpace: new ScenarioSpaces().assetsDictionary[
+        this.selectedScenarioSpace
+      ],
+    };
+
     this.simulationService
-      .performSimulation(this.assetsDictionary)
+      .performSimulation(this.simulationParametersRequest)
       .subscribe((data) => {
         this.simulationData = data;
         this.showLinearChart = true;
