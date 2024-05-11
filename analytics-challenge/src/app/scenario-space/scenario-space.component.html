@@ -1,0 +1,26 @@
+@if(loading){
+<app-spinner></app-spinner>
+}
+
+<div [ngClass]="{'fade-out': loading}">
+
+    <div class="row">
+        <h1>Scenario scene settings</h1>
+    </div>
+
+    <div class="row">
+        <mat-form-field>
+            <mat-label>Scenario space</mat-label>
+            <mat-select [(ngModel)]="selectedScenarioSpace" (selectionChange)="getScenarioSpace()">
+                @for (scenarioSpace of scenarioSpaces; track scenarioSpace) {
+                <mat-option [value]="scenarioSpace.value">{{scenarioSpace.viewValue}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        @if(!loading && data !== ""){
+        <p>{{ data | json }}</p>
+        }
+
+    </div>
+</div>
