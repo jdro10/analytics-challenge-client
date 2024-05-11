@@ -123,8 +123,24 @@ export class ScenarioSpaceComponent {
     }
   }
 
+  noChartDataDialog(): void {
+    this.isDialogOpen = true;
+
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Warning',
+        message: `No data was returned by the API for the given parameters! No chart will be shown. Please try again.`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.isDialogOpen = false;
+    });
+  }
+
   simulate(): void {
     this.loadingChart = true;
+    this.showLinearChart = false;
 
     this.simulationParametersRequest = {
       assetClasses: this.assetsDictionary,
@@ -137,7 +153,13 @@ export class ScenarioSpaceComponent {
       .performSimulation(this.simulationParametersRequest)
       .subscribe((data) => {
         this.simulationData = data;
-        this.showLinearChart = true;
+
+        if (data !== null) {
+          this.showLinearChart = true;
+        } else {
+          this.noChartDataDialog();
+        }
+
         this.loadingChart = false;
       });
   }
