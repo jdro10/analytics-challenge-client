@@ -1,5 +1,6 @@
-export class ScenarioSpaces {
-  assetsDictionary: { [key: string]: string } = {
+export class ScenarioSpace {
+  assetClasses: { [key: string]: string } = {
+    ' ': ' ',
     default_2c: 'CS_EUR',
     dvv_3a: 'CS_EUR',
     chf_default_3a: 'CS_CHF',

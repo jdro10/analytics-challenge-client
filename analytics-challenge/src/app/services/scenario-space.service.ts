@@ -12,7 +12,7 @@ export class ScenarioSpaceService {
   constructor(public http: HttpClient) {}
 
   getScenarioSpace(scenarioSpace: string) {
-    return this.http.get<any>(`${this.apiUrl}/scenarioSpaceSummary`, {
+    return this.http.get(`${this.apiUrl}/scenarioSpaceSummary`, {
       params: new HttpParams().set('scenarioSpace', scenarioSpace),
       headers: new HttpHeaders({
         'X-API-Key': this.apiKey,

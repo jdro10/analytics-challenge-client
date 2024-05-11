@@ -1,5 +1,5 @@
 @if(loading || loadingChart){
-<app-spinner></app-spinner>
+    <app-spinner></app-spinner>
 }
 
 <div [ngClass]="{'fade-out': loading || loadingChart}">
@@ -10,33 +10,33 @@
     <div class="row">
         <mat-form-field>
             <mat-label>Scenario space</mat-label>
-            <mat-select [(ngModel)]="selectedScenarioSpace" (selectionChange)="getScenarioSpace()">
-                @for (scenarioSpace of scenarioSpaces; track scenarioSpace) {
-                <mat-option [value]="scenarioSpace.value">{{scenarioSpace.viewValue}}</mat-option>
+            <mat-select [(ngModel)]="selectedScenarioSpace" (selectionChange)="getAssetClasses()">
+                @for (scenarioSpace of scenarioSpaces.assetClasses | keyvalue; track scenarioSpace) {
+                    <mat-option [value]="scenarioSpace.key">{{scenarioSpace.key}}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
 
         @if(!loading && selectedScenarioSpace !== '' && !error){
-        <div class="row">
-            <h1>Assets classes</h1>
-        </div>
-
-        <div class="row">
-            @for (asset of assetsDictionary | keyvalue; track asset.key) {
-            <div class="col-md-2">
-                <mat-form-field>
-                    <mat-label>{{asset.key}}</mat-label>
-                    <input matInput type="number" [(ngModel)]="this.assetsDictionary[asset.key]"
-                        (ngModelChange)="validateInput($event, asset.key)">
-                </mat-form-field>
+            <div class="row">
+                <h1>Assets classes</h1>
             </div>
-            }
-        </div>
 
-        <div class="row d-flex justify-content-center">
-            <button (click)="simulate()" class="simulate-btn" mat-flat-button color="primary">Simulate</button>
-        </div>
+            <div class="row">
+                @for (asset of assetClasses | keyvalue; track asset.key) {
+                    <div class="col-md-2">
+                        <mat-form-field>
+                            <mat-label>{{asset.key}}</mat-label>
+                            <input matInput type="number" [(ngModel)]="this.assetClasses[asset.key]"
+                                (ngModelChange)="invalidUserInputDialog($event, asset.key)">
+                        </mat-form-field>
+                    </div>
+                }
+            </div>
+
+            <div class="row d-flex justify-content-center">
+                <button (click)="simulate()" class="simulate-btn" mat-flat-button color="primary">Simulate</button>
+            </div>
         }
 
         @if(showLinearChart && !loadingChart && simulationData !== null){

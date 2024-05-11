@@ -11,13 +11,8 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SimulationService } from '../services/simulation.service';
 import { LinearChartComponent } from '../linear-chart/linear-chart.component';
-import { ScenarioSpaces } from '../models/ScenarioSpaces';
 import { SimulationParametersRequest } from './../models/SimulationParametersRequest';
-
-interface ScenarioSpace {
-  value: string;
-  viewValue: string;
-}
+import { ScenarioSpace } from '../models/ScenarioSpace';
 
 @Component({
   selector: 'app-scenario-space',
@@ -36,119 +31,70 @@ interface ScenarioSpace {
   styleUrl: './scenario-space.component.css',
 })
 export class ScenarioSpaceComponent {
+  // asset classes initial allocation default value
   readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
 
-  selectedScenarioSpace: string = '';
+  // ui state flags
   loading: boolean = false;
   error: boolean = false;
-  assetsDictionary: { [key: string]: number } = {};
   isDialogOpen: boolean = false;
-  simulationData: any;
   loadingChart: boolean = false;
   showLinearChart: boolean = false;
-  simulationParametersRequest: SimulationParametersRequest;
+
+  // data variables
+  selectedScenarioSpace: string = '';
+  assetClasses: { [key: string]: number } = {};
+  scenarioSpaces: ScenarioSpace = new ScenarioSpace();
+  simulationData = {} ;
+  simulationParametersRequest = {} as SimulationParametersRequest;
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
     private simulationService: SimulationService,
     public dialog: MatDialog
-  ) {
-    this.simulationParametersRequest = {
-      assetClasses: {},
-      scenarioSpace: '',
-    };
-  }
+  ) {}
 
-  scenarioSpaces: ScenarioSpace[] = [
-    { value: ' ', viewValue: ' ' },
-    { value: 'default_2c', viewValue: 'CS_EUR (default_2c)' },
-    { value: 'dvv_3a', viewValue: 'CS_EUR (dvv_3a)' },
-    { value: 'chf_default_3a', viewValue: 'CS_CHF (chf_default_3a)' },
-    { value: 'us_default_4b', viewValue: 'CS_USD (us_default_4b)' },
-  ];
-
-  getScenarioSpace(): void {
+  // This function retrieves the available asset classes for a specific scenario space
+  getAssetClasses(): void {
+    // ui state flags
     this.loading = true;
     this.error = false;
-    this.assetsDictionary = {};
     this.showLinearChart = false;
+    this.assetClasses = {};
 
+    // call the API to get the available asset classes
     this.scenarioSpaceService
       .getScenarioSpace(this.selectedScenarioSpace)
       .subscribe((data) => {
         try {
-          const jsonData = JSON.parse(JSON.stringify(data));
+          const assetClassesJsonResponse = JSON.parse(JSON.stringify(data));
 
-          Object.keys(jsonData.asset_classes).forEach(
-            (key) =>
-              (this.assetsDictionary[key] = this.DEFAULT_ASSET_CLASS_VALUE)
+          Object.keys(assetClassesJsonResponse.asset_classes).forEach(
+            (key) => (this.assetClasses[key] = this.DEFAULT_ASSET_CLASS_VALUE)
           );
         } catch (error) {
           this.error = true;
-          this.showWarningDialog();
+          this.noAssetClassesAvailableDialog();
         } finally {
           this.loading = false;
         }
       });
   }
 
-  showWarningDialog() {
-    this.dialog.open(DialogComponent, {
-      data: {
-        title: 'Warning',
-        message: `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`,
-      },
-    });
-  }
-
-  validateInput(assetValue: number | null, key: string): void {
-    if (
-      (assetValue === null || isNaN(assetValue) || assetValue < 0) &&
-      !this.isDialogOpen
-    ) {
-      this.isDialogOpen = true;
-
-      const dialogRef = this.dialog.open(DialogComponent, {
-        data: {
-          title: 'Warning',
-          message: `Only positive numeric numbers can be used! Non valid inputs will be converted to the default value of ${this.DEFAULT_ASSET_CLASS_VALUE}. `,
-        },
-      });
-
-      this.assetsDictionary[key] = this.DEFAULT_ASSET_CLASS_VALUE;
-
-      dialogRef.afterClosed().subscribe(() => {
-        this.isDialogOpen = false;
-      });
-    }
-  }
-
-  noChartDataDialog(): void {
-    this.isDialogOpen = true;
-
-    const dialogRef = this.dialog.open(DialogComponent, {
-      data: {
-        title: 'Warning',
-        message: `No data was returned by the API for the given parameters! No chart will be shown. Please try again.`,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.isDialogOpen = false;
-    });
-  }
-
+  // This function performs a call to the custom API given the input asset classes
   simulate(): void {
+    // ui state flags
     this.loadingChart = true;
     this.showLinearChart = false;
 
+    // set asset classes and selected scenario space
     this.simulationParametersRequest = {
-      assetClasses: this.assetsDictionary,
-      scenarioSpace: new ScenarioSpaces().assetsDictionary[
-        this.selectedScenarioSpace
-      ],
+      assetClasses: this.assetClasses,
+      scenarioSpace:
+        this.scenarioSpaces.assetClasses[this.selectedScenarioSpace],
     };
 
+    // call the API and subscribe the result
     this.simulationService
       .performSimulation(this.simulationParametersRequest)
       .subscribe((data) => {
@@ -162,5 +108,52 @@ export class ScenarioSpaceComponent {
 
         this.loadingChart = false;
       });
+  }
+
+  // Dialog shown when the simulation API returns no Asset classes
+  noAssetClassesAvailableDialog() {
+    this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Warning',
+        message: `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`,
+      },
+    });
+  }
+
+  // Dialog shown when user enters invalid input in asset clases (e.g. characters or negative numbers)
+  invalidUserInputDialog(assetValue: number | null, key: string): void {
+    if ((assetValue === null || isNaN(assetValue) || assetValue < 0) && !this.isDialogOpen) {
+      this.isDialogOpen = true;
+
+      const dialogRef = this.dialog.open(DialogComponent, {
+        data: {
+          title: 'Warning',
+          message: `Only positive numeric numbers can be used! Non valid inputs will be converted to the default value of ${this.DEFAULT_ASSET_CLASS_VALUE}. `,
+        },
+      });
+
+      // revert to asset class to default value
+      this.assetClasses[key] = this.DEFAULT_ASSET_CLASS_VALUE;
+
+      dialogRef.afterClosed().subscribe(() => {
+        this.isDialogOpen = false;
+      });
+    }
+  }
+
+  // Dialog shown when simulation returns no data given the input asset classes
+  noChartDataDialog(): void {
+    this.isDialogOpen = true;
+
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Warning',
+        message: `No data was returned by the API for the given parameters! No chart will be shown. Please try again.`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.isDialogOpen = false;
+    });
   }
 }

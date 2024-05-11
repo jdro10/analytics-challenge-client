@@ -35,21 +35,9 @@ export class LinearChartComponent {
   public chartOptions: ChartOptions;
 
   constructor() {
+    // setup linear chart
     this.chartOptions = {
-      series: [
-        {
-          name: 'Percentile 5',
-          data: [],
-        },
-        {
-          name: 'Percentile 50',
-          data: [],
-        },
-        {
-          name: 'Percentile 75',
-          data: [],
-        },
-      ],
+      series: [],
       theme: {
         mode: 'dark',
       },
@@ -86,11 +74,19 @@ export class LinearChartComponent {
   }
 
   ngAfterViewInit(): void {
-    this.chartOptions.series[0].data =
-      this.simulationData.wealth.total.percentile75;
-    this.chartOptions.series[1].data =
-      this.simulationData.wealth.total.percentile50;
-    this.chartOptions.series[2].data =
-      this.simulationData.wealth.total.percentile5;
+    this.chartOptions.series.push({
+      name: 'Percentile 5',
+      data: this.simulationData.wealth.total.percentile75,
+    });
+
+    this.chartOptions.series.push({
+      name: 'Percentile 50',
+      data: this.simulationData.wealth.total.percentile50,
+    });
+
+    this.chartOptions.series.push({
+      name: 'Percentile 5',
+      data: this.simulationData.wealth.total.percentile5,
+    });
   }
 }
