@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SimulationService } from '../services/simulation.service';
+import { LinearChartComponent } from '../linear-chart/linear-chart.component';
 
 interface ScenarioSpace {
   value: string;
@@ -27,6 +28,7 @@ interface ScenarioSpace {
     CommonModule,
     SpinnerComponent,
     MatButtonModule,
+    LinearChartComponent,
   ],
   templateUrl: './scenario-space.component.html',
   styleUrl: './scenario-space.component.css',
@@ -39,6 +41,9 @@ export class ScenarioSpaceComponent {
   error: boolean = false;
   assetsDictionary: { [key: string]: number } = {};
   isDialogOpen: boolean = false;
+  simulationData: any;
+  loadingChart: boolean = false;
+  showLinearChart: boolean = false;
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
@@ -58,6 +63,7 @@ export class ScenarioSpaceComponent {
     this.loading = true;
     this.error = false;
     this.assetsDictionary = {};
+    this.showLinearChart = false;
 
     this.scenarioSpaceService
       .getScenarioSpace(this.selectedScenarioSpace)
@@ -110,8 +116,14 @@ export class ScenarioSpaceComponent {
   }
 
   simulate(): void {
-    this.simulationService.performSimulation().subscribe((data) => {
-      console.log(data);
-    });
+    this.loadingChart = true;
+
+    this.simulationService
+      .performSimulation(this.assetsDictionary)
+      .subscribe((data) => {
+        this.simulationData = data;
+        this.showLinearChart = true;
+        this.loadingChart = false;
+      });
   }
 }

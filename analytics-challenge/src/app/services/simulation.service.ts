@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
@@ -6,16 +6,11 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class SimulationService {
-  apiUrl: string = environment.apiUrl;
-  apiKey: string = environment.apiKey;
+  apiUrl: string = environment.customApi;
 
   constructor(public http: HttpClient) {}
 
-  performSimulation() {
-    return this.http.post<any>(`${this.apiUrl}/simulations`, {
-      headers: new HttpHeaders({
-        'X-API-Key': this.apiKey,
-      }),
-    });
+  performSimulation(assetsData: { [key: string]: number }) {
+    return this.http.post<any>(`${this.apiUrl}/simulation`, assetsData);
   }
 }

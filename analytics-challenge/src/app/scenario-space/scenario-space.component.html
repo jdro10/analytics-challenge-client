@@ -1,8 +1,8 @@
-@if(loading){
+@if(loading || loadingChart){
 <app-spinner></app-spinner>
 }
 
-<div [ngClass]="{'fade-out': loading}">
+<div [ngClass]="{'fade-out': loading || loadingChart}">
     <div class="row">
         <h1>Scenario scene settings</h1>
     </div>
@@ -37,6 +37,10 @@
         <div class="row d-flex justify-content-center">
             <button (click)="simulate()" class="simulate-btn" mat-flat-button color="primary">Simulate</button>
         </div>
+        }
+
+        @if(showLinearChart){
+            <app-linear-chart [simulationData]="simulationData"></app-linear-chart>
         }
     </div>
 </div>

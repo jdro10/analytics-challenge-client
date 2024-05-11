@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ApexTheme, NgApexchartsModule } from 'ng-apexcharts';
 import {
   ChartComponent,
@@ -31,6 +31,7 @@ export type ChartOptions = {
   styleUrl: './linear-chart.component.css',
 })
 export class LinearChartComponent {
+  @Input() simulationData: any;
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: ChartOptions;
 
