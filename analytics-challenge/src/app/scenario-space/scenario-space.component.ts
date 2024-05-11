@@ -27,11 +27,13 @@ interface ScenarioSpace {
   styleUrl: './scenario-space.component.css',
 })
 export class ScenarioSpaceComponent {
-  data: string = '';
+  scenarioSpaceData: string = '';
   selectedScenarioSpace: string = '';
   loading: boolean = false;
+  assets: string[] = [];
+  error: boolean = false;
 
-  constructor(private scenarioSpaceService: ScenarioSpaceService) { }
+  constructor(private scenarioSpaceService: ScenarioSpaceService) {}
 
   scenarioSpaces: ScenarioSpace[] = [
     { value: 'default_2c', viewValue: 'CS_EUR (default_2c)' },
@@ -42,12 +44,21 @@ export class ScenarioSpaceComponent {
 
   getScenarioSpace(): void {
     this.loading = true;
+    this.error = false;
+    this.assets = [];
 
     this.scenarioSpaceService
       .getScenarioSpace(this.selectedScenarioSpace)
       .subscribe((data) => {
-        this.data = data;
-        this.loading = false;
+        try {
+          this.scenarioSpaceData = data;
+          const jsonData = JSON.parse(JSON.stringify(data));
+          this.assets = Object.keys(jsonData.asset_classes);
+        } catch (error) {
+          this.error = true;
+        } finally {
+          this.loading = false;
+        }
       });
   }
 }

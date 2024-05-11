@@ -1,5 +1,5 @@
 @if(loading){
-<app-spinner></app-spinner>
+    <app-spinner></app-spinner>
 }
 
 <div [ngClass]="{'fade-out': loading}">
@@ -13,13 +13,31 @@
             <mat-label>Scenario space</mat-label>
             <mat-select [(ngModel)]="selectedScenarioSpace" (selectionChange)="getScenarioSpace()">
                 @for (scenarioSpace of scenarioSpaces; track scenarioSpace) {
-                <mat-option [value]="scenarioSpace.value">{{scenarioSpace.viewValue}}</mat-option>
+                    <mat-option [value]="scenarioSpace.value">{{scenarioSpace.viewValue}}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
 
-        @if(!loading && data !== ""){
-        <p>{{ data | json }}</p>
+        @if(!loading && scenarioSpaceData !== "" && !error){
+            <div class="row">
+                <h1>Assets classes</h1>
+            </div>
+
+            
+            @for (asset of assets; track asset) {
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label> {{asset}}</mat-label>
+                        <input matInput type="text" pattern="[0-9]*" inputmode="numeric">
+                    </mat-form-field>
+                </div>
+            }
+        }
+
+        @if(!loading && error){
+            <div class="row">
+                <p>No available asset classes for the selected scenario scene!</p>
+            </div>
         }
 
     </div>
