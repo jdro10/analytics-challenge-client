@@ -64,7 +64,8 @@ export class ScenarioSpaceComponent {
           const jsonData = JSON.parse(JSON.stringify(data));
 
           Object.keys(jsonData.asset_classes).forEach(
-            (key) => (this.assetsDictionary[key] = 11000)
+            (key) =>
+              (this.assetsDictionary[key] = this.DEFAULT_ASSET_CLASS_VALUE)
           );
         } catch (error) {
           this.error = true;
