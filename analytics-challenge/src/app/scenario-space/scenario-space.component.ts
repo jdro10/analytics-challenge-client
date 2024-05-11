@@ -31,11 +31,13 @@ interface ScenarioSpace {
   styleUrl: './scenario-space.component.css',
 })
 export class ScenarioSpaceComponent {
-  scenarioSpaceData: string = '';
+  readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
+
   selectedScenarioSpace: string = '';
   loading: boolean = false;
-  assets: string[] = [];
   error: boolean = false;
+  assetsDictionary: { [key: string]: number } = {};
+  isDialogOpen: boolean = false;
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
@@ -53,15 +55,17 @@ export class ScenarioSpaceComponent {
   getScenarioSpace(): void {
     this.loading = true;
     this.error = false;
-    this.assets = [];
+    this.assetsDictionary = {};
 
     this.scenarioSpaceService
       .getScenarioSpace(this.selectedScenarioSpace)
       .subscribe((data) => {
         try {
-          this.scenarioSpaceData = data;
           const jsonData = JSON.parse(JSON.stringify(data));
-          this.assets = Object.keys(jsonData.asset_classes);
+
+          Object.keys(jsonData.asset_classes).forEach(
+            (key) => (this.assetsDictionary[key] = 11000)
+          );
         } catch (error) {
           this.error = true;
           this.showWarningDialog();
@@ -78,5 +82,27 @@ export class ScenarioSpaceComponent {
         message: `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`,
       },
     });
+  }
+
+  validateInput(assetValue: number | null, key: string): void {
+    if (
+      (assetValue === null || isNaN(assetValue) || assetValue < 0) &&
+      !this.isDialogOpen
+    ) {
+      this.isDialogOpen = true;
+
+      const dialogRef = this.dialog.open(DialogComponent, {
+        data: {
+          title: 'Warning',
+          message: `Only positive numeric numbers can be used! Non valid inputs will be converted to the default value of ${this.DEFAULT_ASSET_CLASS_VALUE}. `,
+        },
+      });
+
+      this.assetsDictionary[key] = this.DEFAULT_ASSET_CLASS_VALUE;
+
+      dialogRef.afterClosed().subscribe(() => {
+        this.isDialogOpen = false;
+      });
+    }
   }
 }

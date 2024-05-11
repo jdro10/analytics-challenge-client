@@ -18,22 +18,23 @@
             </mat-select>
         </mat-form-field>
 
-        @if(!loading && scenarioSpaceData !== "" && !error){
+        @if(!loading && selectedScenarioSpace !== '' && !error){
         <div class="row">
             <h1>Assets classes</h1>
         </div>
 
         <div class="row">
-            @for (asset of assets; track asset) {
+            @for (asset of assetsDictionary | keyvalue; track asset.key) {
             <div class="col-md-2">
                 <mat-form-field>
-                    <mat-label>{{asset}}</mat-label>
-                    <input matInput type="text" pattern="[0-9]*" inputmode="numeric" value="10000">
+                    <mat-label>{{asset.key}}</mat-label>
+                    <input matInput type="number" [(ngModel)]="this.assetsDictionary[asset.key]"
+                        (ngModelChange)="validateInput($event, asset.key)">
                 </mat-form-field>
             </div>
             }
         </div>
-        
+
         <div class="row d-flex justify-content-center">
             <button class="simulate-btn" mat-flat-button color="primary">Simulate</button>
         </div>
