@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ScenarioSpaceService } from '../services/scenario-space.service';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../spinner/spinner.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 interface ScenarioSpace {
   value: string;
@@ -33,7 +35,10 @@ export class ScenarioSpaceComponent {
   assets: string[] = [];
   error: boolean = false;
 
-  constructor(private scenarioSpaceService: ScenarioSpaceService) {}
+  constructor(
+    private scenarioSpaceService: ScenarioSpaceService,
+    public dialog: MatDialog
+  ) {}
 
   scenarioSpaces: ScenarioSpace[] = [
     { value: 'default_2c', viewValue: 'CS_EUR (default_2c)' },
@@ -56,9 +61,19 @@ export class ScenarioSpaceComponent {
           this.assets = Object.keys(jsonData.asset_classes);
         } catch (error) {
           this.error = true;
+          this.showWarningDialog();
         } finally {
           this.loading = false;
         }
       });
+  }
+
+  showWarningDialog() {
+    this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Warning',
+        message: `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`,
+      },
+    });
   }
 }
