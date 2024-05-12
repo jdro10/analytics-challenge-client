@@ -11,7 +11,7 @@ cd analytics-challenge/src/environments
 # Update environment.ts file
 apiUrl: "API_URL",
 apiKey: "API_KEY",
-customApi: "CUSTOM_API_URL"
+customApi: "http://localhost:7070/api"
 
 # Back into the root folder:
 cd
