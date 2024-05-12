@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { ScenarioSpaceService } from '../services/scenario-space.service';
@@ -23,6 +23,8 @@ import { AssetClassesComponent } from '../asset-classes/asset-classes.component'
   styleUrl: './scenario-space.component.css',
 })
 export class ScenarioSpaceComponent {
+  @Output() onLoading = new EventEmitter<boolean>();
+  
   // asset classes initial allocation default value
   readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
 
@@ -39,16 +41,16 @@ export class ScenarioSpaceComponent {
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
     public dialog: MatDialog
-  ) {
-
-  }
+  ) {}
 
   // This function retrieves the available asset classes for a specific scenario space
   getAssetClasses(): void {
     // ui state flags
     this.loading = true;
+    this.onLoading.emit(this.loading);
     this.error = false;
     this.assetClasses = {};
+    
 
     // call the API to get the available asset classes
     this.scenarioSpaceService
@@ -69,10 +71,12 @@ export class ScenarioSpaceComponent {
             );
           } finally {
             this.loading = false;
+            this.onLoading.emit(this.loading);
           }
         },
         error: () => {
           this.loading = false;
+          this.onLoading.emit(this.loading);
           this.error = true;
           this.showDialog(
             'Error',
@@ -96,5 +100,10 @@ export class ScenarioSpaceComponent {
     dialogRef.afterClosed().subscribe(() => {
       this.isDialogOpen = false;
     });
+  }
+
+  // notify parent component that linear chart is loading
+  onAssetClassesLoadingEvent(loading: boolean): void {
+    this.onLoading.emit(loading);
   }
 }

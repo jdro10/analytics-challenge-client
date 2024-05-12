@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -22,12 +22,14 @@ import { LinearChartComponent } from '../linear-chart/linear-chart.component';
     MatButtonModule,
     MatInputModule,
     SpinnerComponent,
-    LinearChartComponent
+    LinearChartComponent,
   ],
   templateUrl: './asset-classes.component.html',
   styleUrl: './asset-classes.component.css',
 })
 export class AssetClassesComponent {
+  @Output() onLoading = new EventEmitter<boolean>();
+
   // asset classes initial allocation default value
   readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
 
@@ -81,6 +83,7 @@ export class AssetClassesComponent {
   simulate(): void {
     // ui state flags
     this.loadingChart = true;
+    this.onLoading.emit(this.loadingChart);
     this.showLinearChart = false;
 
     // set asset classes and selected scenario space
@@ -93,8 +96,8 @@ export class AssetClassesComponent {
     // call the API and subscribe the result
     this.simulationService
       .performSimulation(this.simulationParametersRequest)
-      .subscribe(
-        (data) => {
+      .subscribe({
+        next: (data) => {
           this.simulationData = data;
           this.simulationStats[this.selectedScenarioSpace] += 1;
 
@@ -108,15 +111,17 @@ export class AssetClassesComponent {
           }
 
           this.loadingChart = false;
+          this.onLoading.emit(this.loadingChart);
         },
-        () => {
+        error: () => {
           this.loadingChart = false;
+          this.onLoading.emit(this.loadingChart);
           this.showDialog(
             'Error',
             'Could not establish communication with simulation API.'
           );
-        }
-      );
+        },
+      });
   }
 
   // Generic dialog with custom title and message

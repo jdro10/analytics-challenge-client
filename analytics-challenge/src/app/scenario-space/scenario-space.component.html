@@ -1,8 +1,4 @@
-@if(loading){
-    <app-spinner></app-spinner>
-}
-
-<div [ngClass]="{'fade-out': loading}">
+<div >
     <div class="row">
         <h1>Scenario scene settings</h1>
     </div>
@@ -18,7 +14,7 @@
         </mat-form-field>
 
         @if(!loading && selectedScenarioSpace !== '' && !error){
-            <app-asset-classes [assetClasses]="assetClasses" [selectedScenarioSpace]="selectedScenarioSpace"></app-asset-classes>
+            <app-asset-classes (onLoading)="onAssetClassesLoadingEvent($event)" [assetClasses]="assetClasses" [selectedScenarioSpace]="selectedScenarioSpace"></app-asset-classes>
         }
     </div>
 </div>

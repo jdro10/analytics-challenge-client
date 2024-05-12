@@ -1,6 +1,10 @@
+@if(loading){
+  <app-spinner></app-spinner>
+}
+
 <app-toolbar></app-toolbar>
 
-<div class="container">
-  <app-scenario-space></app-scenario-space>
+<div class="container" [ngClass]="{'fade-out': loading}">
+  <app-scenario-space (onLoading)="onLoadingEvent($event)"></app-scenario-space>
   <app-simulation-stats></app-simulation-stats>
 </div>
