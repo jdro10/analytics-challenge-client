@@ -63,7 +63,7 @@ export class ScenarioSpaceComponent {
             const assetClassesJsonResponse = JSON.parse(JSON.stringify(data));
 
             Object.keys(assetClassesJsonResponse.asset_classes).forEach(
-              (key) => (this.assetClasses[key] = this.DEFAULT_ASSET_CLASS_VALUE)
+              (key) => (this.assetClasses[key] = Math.floor(Math.random() * this.DEFAULT_ASSET_CLASS_VALUE) + 1)
             );
           } catch (error) {
             this.error = true;
