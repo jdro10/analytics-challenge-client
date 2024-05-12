@@ -29,6 +29,7 @@ import { LinearChartComponent } from '../linear-chart/linear-chart.component';
 })
 export class AssetClassesComponent {
   @Output() onLoading = new EventEmitter<boolean>();
+  @Output() onSimulation = new EventEmitter<string>();
 
   // asset classes initial allocation default value
   readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
@@ -38,22 +39,18 @@ export class AssetClassesComponent {
   loadingChart: boolean = false;
   showLinearChart: boolean = false;
 
+  // input variables from parent component
   @Input() simulationData: any;
   @Input() assetClasses: { [key: string]: number } = {};
   @Input() selectedScenarioSpace: string = '';
 
   simulationParametersRequest = {} as SimulationParametersRequest;
   scenarioSpaces: ScenarioSpace = new ScenarioSpace();
-  simulationStats: { [key: string]: number } = {};
 
   constructor(
     public dialog: MatDialog,
     private simulationService: SimulationService
-  ) {
-    Object.keys(this.scenarioSpaces.assetClasses).forEach((key) => {
-      this.simulationStats[key] = 0;
-    });
-  }
+  ) { }
 
   // Dialog shown when user enters invalid input in asset clases (e.g. characters or negative numbers)
   invalidUserInputDialog(assetValue: number | null, key: string): void {
@@ -99,7 +96,7 @@ export class AssetClassesComponent {
       .subscribe({
         next: (data) => {
           this.simulationData = data;
-          this.simulationStats[this.selectedScenarioSpace] += 1;
+          this.onSimulation.emit(this.selectedScenarioSpace);
 
           if (data !== null) {
             this.showLinearChart = true;

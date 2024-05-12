@@ -23,8 +23,11 @@ import { AssetClassesComponent } from '../asset-classes/asset-classes.component'
   styleUrl: './scenario-space.component.css',
 })
 export class ScenarioSpaceComponent {
+  // emit to parent component about loading operations
   @Output() onLoading = new EventEmitter<boolean>();
-  
+  // emit to parent component scenario space number of simulation updates
+  @Output() onSimulation = new EventEmitter<string>();
+
   // asset classes initial allocation default value
   readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
 
@@ -50,7 +53,6 @@ export class ScenarioSpaceComponent {
     this.onLoading.emit(this.loading);
     this.error = false;
     this.assetClasses = {};
-    
 
     // call the API to get the available asset classes
     this.scenarioSpaceService
@@ -65,6 +67,7 @@ export class ScenarioSpaceComponent {
             );
           } catch (error) {
             this.error = true;
+
             this.showDialog(
               'Warning',
               `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`
@@ -78,6 +81,7 @@ export class ScenarioSpaceComponent {
           this.loading = false;
           this.onLoading.emit(this.loading);
           this.error = true;
+
           this.showDialog(
             'Error',
             `An unexpected error occurred while attempting to communicate with the API.`
@@ -86,7 +90,7 @@ export class ScenarioSpaceComponent {
       });
   }
 
-  // Generic dialog with custom title and message
+  // generic dialog with custom title and message
   showDialog(title: string, message: string): void {
     this.isDialogOpen = true;
 
@@ -102,8 +106,13 @@ export class ScenarioSpaceComponent {
     });
   }
 
-  // notify parent component that linear chart is loading
+  // notify parent about loading operation
   onAssetClassesLoadingEvent(loading: boolean): void {
     this.onLoading.emit(loading);
+  }
+
+  // update scenario space number of simulations
+  onSimulationPerformed(scenarioSpace: string): void {
+    this.onSimulation.emit(scenarioSpace);
   }
 }

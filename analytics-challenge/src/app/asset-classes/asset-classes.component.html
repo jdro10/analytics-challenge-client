@@ -5,13 +5,14 @@
 
     <div class="row">
         @for (asset of assetClasses | keyvalue; track asset.key) {
-        <div class="col-md-2">
-            <mat-form-field>
-                <mat-label>{{asset.key}}</mat-label>
-                <input matInput type="number" [(ngModel)]="this.assetClasses[asset.key]"
-                    (ngModelChange)="invalidUserInputDialog($event, asset.key)">
-            </mat-form-field>
-        </div>
+            <div class="col-md-2">
+                <mat-form-field>
+                    <mat-label>{{asset.key}}</mat-label>
+                    <input matInput type="number"
+                           [(ngModel)]="this.assetClasses[asset.key]"
+                           (ngModelChange)="invalidUserInputDialog($event, asset.key)">
+                </mat-form-field>
+            </div>
         }
     </div>
 

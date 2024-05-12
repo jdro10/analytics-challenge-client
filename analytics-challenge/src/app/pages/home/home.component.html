@@ -5,6 +5,11 @@
 <app-toolbar></app-toolbar>
 
 <div class="container" [ngClass]="{'fade-out': loading}">
-  <app-scenario-space (onLoading)="onLoadingEvent($event)"></app-scenario-space>
-  <app-simulation-stats></app-simulation-stats>
+
+  <app-scenario-space (onLoading)="onLoadingEvent($event)"
+                      (onSimulation)="onSimulationPerformed($event)">
+  </app-scenario-space>
+  
+  <app-simulation-stats [simulationStats]="simulationStats"></app-simulation-stats>
+  
 </div>
