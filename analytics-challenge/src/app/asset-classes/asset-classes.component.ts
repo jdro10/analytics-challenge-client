@@ -8,12 +8,9 @@ import { SimulationService } from '../services/simulation.service';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { LinearChartComponent } from '../linear-chart/linear-chart.component';
-import { SimulationStatsComponent } from '../simulation-stats/simulation-stats.component';
-
 
 @Component({
   selector: 'app-asset-classes',
@@ -24,10 +21,8 @@ import { SimulationStatsComponent } from '../simulation-stats/simulation-stats.c
     FormsModule,
     MatButtonModule,
     MatInputModule,
-    MatSelectModule,
     SpinnerComponent,
-    LinearChartComponent,
-    SimulationStatsComponent
+    LinearChartComponent
   ],
   templateUrl: './asset-classes.component.html',
   styleUrl: './asset-classes.component.css',
@@ -47,7 +42,6 @@ export class AssetClassesComponent {
 
   simulationParametersRequest = {} as SimulationParametersRequest;
   scenarioSpaces: ScenarioSpace = new ScenarioSpace();
-
   simulationStats: { [key: string]: number } = {};
 
   constructor(
