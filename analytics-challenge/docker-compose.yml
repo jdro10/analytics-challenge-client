@@ -1,0 +1,15 @@
+services:
+  analyticschallenge:
+    container_name: analyticschallengecontainer
+    build: .
+    image: analyticschallenge:v1
+    ports:
+      - 4210:80
+    expose:
+      - 80
+    networks:
+      - internalnet
+
+networks:
+  internalnet:
+    driver: bridge

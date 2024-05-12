@@ -1,0 +1,9 @@
+.fade-out {
+    opacity: 20%;
+    pointer-events: none;
+}
+
+.simulate-btn {
+    width: 99%;
+    margin-left: 1%;
+}

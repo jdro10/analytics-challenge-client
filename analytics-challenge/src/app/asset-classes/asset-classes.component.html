@@ -1,0 +1,26 @@
+<div>
+    <div class="row">
+        <h1>Assets classes</h1>
+    </div>
+
+    <div class="row">
+        @for (asset of assetClasses | keyvalue; track asset.key) {
+            <div class="col-md-2">
+                <mat-form-field>
+                    <mat-label>{{asset.key}}</mat-label>
+                    <input matInput type="number"
+                           [(ngModel)]="this.assetClasses[asset.key]"
+                           (ngModelChange)="invalidUserInputDialog($event, asset.key)">
+                </mat-form-field>
+            </div>
+        }
+    </div>
+
+    <div class="row d-flex justify-content-center">
+        <button (click)="simulate()" class="simulate-btn" mat-flat-button color="primary">Simulate</button>
+    </div>
+
+    @if(showLinearChart && !loadingChart && simulationData !== null){
+        <app-linear-chart [simulationData]="simulationData"></app-linear-chart>
+    }
+</div>
