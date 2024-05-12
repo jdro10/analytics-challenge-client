@@ -11,6 +11,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { LinearChartComponent } from '../linear-chart/linear-chart.component';
+import { Utils } from '../utils/utils';
+
+// asset classes initial allocation default value
+const DEFAULT_ASSET_CLASS_VALUE = 10000;
 
 @Component({
   selector: 'app-asset-classes',
@@ -31,21 +35,18 @@ export class AssetClassesComponent {
   @Output() onLoading = new EventEmitter<boolean>();
   @Output() onSimulation = new EventEmitter<string>();
 
-  // asset classes initial allocation default value
-  readonly DEFAULT_ASSET_CLASS_VALUE = 10000;
-
   // ui state variables
-  isDialogOpen: boolean = false;
-  loadingChart: boolean = false;
-  showLinearChart: boolean = false;
+  public isDialogOpen: boolean = false;
+  public loadingChart: boolean = false;
+  public showLinearChart: boolean = false;
 
   // input variables from parent component
-  @Input() simulationData: any;
   @Input() assetClasses: { [key: string]: number } = {};
   @Input() selectedScenarioSpace: string = '';
 
-  simulationParametersRequest = {} as SimulationParametersRequest;
-  scenarioSpaces: ScenarioSpace = new ScenarioSpace();
+  public simulationParametersRequest = {} as SimulationParametersRequest;
+  public scenarioSpaces: ScenarioSpace = new ScenarioSpace();
+  public simulationData: any;
 
   constructor(
     public dialog: MatDialog,
@@ -54,24 +55,20 @@ export class AssetClassesComponent {
 
   // Dialog shown when user enters invalid input in asset clases (e.g. characters or negative numbers)
   invalidUserInputDialog(assetValue: number | null, key: string): void {
-    if (
-      (assetValue === null || isNaN(assetValue) || assetValue < 0) &&
-      !this.isDialogOpen
-    ) {
+    if ((assetValue == null || isNaN(assetValue) || assetValue < 0) && !this.isDialogOpen) {
       this.isDialogOpen = true;
 
       const dialogRef = this.dialog.open(DialogComponent, {
         data: {
           title: 'Warning',
-          message: `Only positive numeric numbers can be used! Non valid inputs will be converted to the default value of ${this.DEFAULT_ASSET_CLASS_VALUE}. `,
+          message: `Only positive numeric numbers can be used! Non valid inputs will be converted to the default value of ${DEFAULT_ASSET_CLASS_VALUE}. `,
         },
       });
 
-      // revert to asset class to default value
-      this.assetClasses[key] = this.DEFAULT_ASSET_CLASS_VALUE;
-
       dialogRef.afterClosed().subscribe(() => {
         this.isDialogOpen = false;
+        // revert to asset class to default value
+        this.assetClasses[key] = DEFAULT_ASSET_CLASS_VALUE;
       });
     }
   }
@@ -102,9 +99,10 @@ export class AssetClassesComponent {
           if (data !== null) {
             this.showLinearChart = true;
           } else {
-            this.showDialog(
+            Utils.showDialog(
               'Warning',
-              'No data was returned by the API for the given parameters! No chart will be shown. Please try again.'
+              'No data was returned by the API for the given parameters! No chart will be shown. Please try again.',
+              this.dialog
             );
           }
 
@@ -114,27 +112,12 @@ export class AssetClassesComponent {
         error: () => {
           this.loadingChart = false;
           this.onLoading.emit(this.loadingChart);
-          this.showDialog(
+          Utils.showDialog(
             'Error',
-            'Could not establish communication with simulation API.'
+            'Could not establish communication with simulation API.',
+            this.dialog
           );
         },
       });
-  }
-
-  // Generic dialog with custom title and message
-  showDialog(title: string, message: string): void {
-    this.isDialogOpen = true;
-
-    const dialogRef = this.dialog.open(DialogComponent, {
-      data: {
-        title: title,
-        message: message,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      this.isDialogOpen = false;
-    });
   }
 }

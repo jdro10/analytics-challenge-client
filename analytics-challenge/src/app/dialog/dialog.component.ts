@@ -23,8 +23,8 @@ import { Inject } from '@angular/core';
   styleUrl: './dialog.component.css',
 })
 export class DialogComponent {
-  dialogTitle: string;
-  dialogMessage: string;
+  public dialogTitle: string;
+  public dialogMessage: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.dialogTitle = data.title;
