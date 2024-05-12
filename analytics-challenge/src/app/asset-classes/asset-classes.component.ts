@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
@@ -12,8 +12,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SpinnerComponent } from '../spinner/spinner.component';
 import { LinearChartComponent } from '../linear-chart/linear-chart.component';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
+import { SimulationStatsComponent } from '../simulation-stats/simulation-stats.component';
+
 
 @Component({
   selector: 'app-asset-classes',
@@ -27,8 +27,7 @@ import { MatListModule } from '@angular/material/list';
     MatSelectModule,
     SpinnerComponent,
     LinearChartComponent,
-    MatDividerModule,
-    MatListModule,
+    SimulationStatsComponent
   ],
   templateUrl: './asset-classes.component.html',
   styleUrl: './asset-classes.component.css',
