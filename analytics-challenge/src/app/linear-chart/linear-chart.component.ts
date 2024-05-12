@@ -74,19 +74,25 @@ export class LinearChartComponent {
   }
 
   ngAfterViewInit(): void {
-    this.chartOptions.series.push({
-      name: 'Percentile 5',
-      data: this.simulationData.wealth.total.percentile75,
-    });
+    if (this.simulationData.wealth.total.percentile75) {
+      this.chartOptions.series.push({
+        name: 'Percentile 75',
+        data: this.simulationData.wealth.total.percentile75,
+      });
+    }
 
-    this.chartOptions.series.push({
-      name: 'Percentile 50',
-      data: this.simulationData.wealth.total.percentile50,
-    });
+    if (this.simulationData.wealth.total.percentile50) {
+      this.chartOptions.series.push({
+        name: 'Percentile 50',
+        data: this.simulationData.wealth.total.percentile50,
+      });
+    }
 
-    this.chartOptions.series.push({
-      name: 'Percentile 5',
-      data: this.simulationData.wealth.total.percentile5,
-    });
+    if (this.simulationData.wealth.total.percentile5) {
+      this.chartOptions.series.push({
+        name: 'Percentile 5',
+        data: this.simulationData.wealth.total.percentile5,
+      });
+    }
   }
 }
