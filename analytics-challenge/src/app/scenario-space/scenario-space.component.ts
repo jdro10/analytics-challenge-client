@@ -29,7 +29,7 @@ import { MatListModule } from '@angular/material/list';
     MatButtonModule,
     LinearChartComponent,
     MatDividerModule,
-    MatListModule
+    MatListModule,
   ],
   templateUrl: './scenario-space.component.html',
   styleUrl: './scenario-space.component.css',
@@ -49,19 +49,19 @@ export class ScenarioSpaceComponent {
   selectedScenarioSpace: string = '';
   assetClasses: { [key: string]: number } = {};
   scenarioSpaces: ScenarioSpace = new ScenarioSpace();
-  simulationData = {} ;
+  simulationData = {};
   simulationParametersRequest = {} as SimulationParametersRequest;
-  simulationStats: { [key: string]: number} = {}
+  simulationStats: { [key: string]: number } = {};
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
     private simulationService: SimulationService,
     public dialog: MatDialog
   ) {
-    Object.keys(this.scenarioSpaces.assetClasses).forEach(key => {
+    Object.keys(this.scenarioSpaces.assetClasses).forEach((key) => {
       this.simulationStats[key] = 0;
     });
-   }
+  }
 
   // This function retrieves the available asset classes for a specific scenario space
   getAssetClasses(): void {
@@ -83,7 +83,10 @@ export class ScenarioSpaceComponent {
           );
         } catch (error) {
           this.error = true;
-          this.noAssetClassesAvailableDialog();
+          this.showDialog(
+            'Warning',
+            `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`
+          );
         } finally {
           this.loading = false;
         }
@@ -106,28 +109,30 @@ export class ScenarioSpaceComponent {
     // call the API and subscribe the result
     this.simulationService
       .performSimulation(this.simulationParametersRequest)
-      .subscribe((data) => {
-        this.simulationData = data;
-        this.simulationStats[this.selectedScenarioSpace] += 1;
+      .subscribe(
+        (data) => {
+          this.simulationData = data;
+          this.simulationStats[this.selectedScenarioSpace] += 1;
 
-        if (data !== null) {
-          this.showLinearChart = true;
-        } else {
-          this.noChartDataDialog();
+          if (data !== null) {
+            this.showLinearChart = true;
+          } else {
+            this.showDialog(
+              'Warning',
+              'No data was returned by the API for the given parameters! No chart will be shown. Please try again.'
+            );
+          }
+
+          this.loadingChart = false;
+        },
+        () => {
+          this.loadingChart = false;
+          this.showDialog(
+            'Error',
+            'Could not establish communication with simulation API.'
+          );
         }
-
-        this.loadingChart = false;
-      });
-  }
-
-  // Dialog shown when the simulation API returns no Asset classes
-  noAssetClassesAvailableDialog() {
-    this.dialog.open(DialogComponent, {
-      data: {
-        title: 'Warning',
-        message: `The selected scenario scene (${this.selectedScenarioSpace}) has no asset classes. Please select a different option.`,
-      },
-    });
+      );
   }
 
   // Dialog shown when user enters invalid input in asset clases (e.g. characters or negative numbers)
@@ -151,14 +156,14 @@ export class ScenarioSpaceComponent {
     }
   }
 
-  // Dialog shown when simulation returns no data given the input asset classes
-  noChartDataDialog(): void {
+  // Generic dialog with custom title and message
+  showDialog(title: string, message: string): void {
     this.isDialogOpen = true;
 
     const dialogRef = this.dialog.open(DialogComponent, {
       data: {
-        title: 'Warning',
-        message: `No data was returned by the API for the given parameters! No chart will be shown. Please try again.`,
+        title: title,
+        message: message,
       },
     });
 
