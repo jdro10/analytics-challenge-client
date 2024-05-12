@@ -50,7 +50,7 @@ export class AssetClassesComponent {
   constructor(
     public dialog: MatDialog,
     private simulationService: SimulationService
-  ) { }
+  ) {}
 
   // Dialog shown when user enters invalid input in asset clases (e.g. characters or negative numbers)
   invalidUserInputDialog(assetValue: number | null, key: string): void {
@@ -86,8 +86,9 @@ export class AssetClassesComponent {
     // set asset classes and selected scenario space
     this.simulationParametersRequest = {
       assetClasses: this.assetClasses,
-      scenarioSpace:
+      scenarioSpaceName:
         this.scenarioSpaces.assetClasses[this.selectedScenarioSpace],
+      scenarioSpace: this.selectedScenarioSpace,
     };
 
     // call the API and subscribe the result

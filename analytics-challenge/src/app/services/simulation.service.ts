@@ -11,10 +11,10 @@ export class SimulationService {
 
   constructor(public http: HttpClient) {}
 
-  performSimulation(simulationParamters: SimulationParametersRequest) {
+  performSimulation(simulationParameters: SimulationParametersRequest) {
     return this.http.post<any>(
       `${this.apiUrl}/simulation`,
-      simulationParamters
+      simulationParameters
     );
   }
 }
