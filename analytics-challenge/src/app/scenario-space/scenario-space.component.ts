@@ -13,6 +13,8 @@ import { SimulationService } from '../services/simulation.service';
 import { LinearChartComponent } from '../linear-chart/linear-chart.component';
 import { SimulationParametersRequest } from './../models/SimulationParametersRequest';
 import { ScenarioSpace } from '../models/ScenarioSpace';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-scenario-space',
@@ -26,6 +28,8 @@ import { ScenarioSpace } from '../models/ScenarioSpace';
     SpinnerComponent,
     MatButtonModule,
     LinearChartComponent,
+    MatDividerModule,
+    MatListModule
   ],
   templateUrl: './scenario-space.component.html',
   styleUrl: './scenario-space.component.css',
@@ -47,12 +51,17 @@ export class ScenarioSpaceComponent {
   scenarioSpaces: ScenarioSpace = new ScenarioSpace();
   simulationData = {} ;
   simulationParametersRequest = {} as SimulationParametersRequest;
+  simulationStats: { [key: string]: number} = {}
 
   constructor(
     private scenarioSpaceService: ScenarioSpaceService,
     private simulationService: SimulationService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    Object.keys(this.scenarioSpaces.assetClasses).forEach(key => {
+      this.simulationStats[key] = 0;
+    });
+   }
 
   // This function retrieves the available asset classes for a specific scenario space
   getAssetClasses(): void {
@@ -99,6 +108,7 @@ export class ScenarioSpaceComponent {
       .performSimulation(this.simulationParametersRequest)
       .subscribe((data) => {
         this.simulationData = data;
+        this.simulationStats[this.selectedScenarioSpace] += 1;
 
         if (data !== null) {
           this.showLinearChart = true;

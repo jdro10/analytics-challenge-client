@@ -43,4 +43,14 @@
             <app-linear-chart [simulationData]="simulationData"></app-linear-chart>
         }
     </div>
+
+    <div class="row" class="stats-div">
+        <h1>Simulation statistics</h1>
+        <mat-list>
+            @for (simulation of simulationStats | keyvalue; track simulation.key){
+                <mat-list-item>{{ simulation.key.trim() ? simulation.key : 'default (empty)' }}: {{simulation.value}} simulations</mat-list-item>
+                <mat-divider></mat-divider>
+            }
+          </mat-list>
+    </div>
 </div>
