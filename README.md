@@ -9,7 +9,7 @@ git clone https://github.com/jdro10/analytics-challenge-client.git
 cd analytics-challenge/src/environments
 
 # Update environment.ts file
-apiUrl: "https://{DOMAIN}/api/public/v1", // Replace {DOMAIN} with the actual domain of the API.
+apiUrl: "https://{DOMAIN}/api/public/v1", // Replace {DOMAIN} with the actual API domain.
 apiKey: "API_KEY",
 customApi: "http://localhost:7070/api"
 
