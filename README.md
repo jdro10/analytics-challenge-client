@@ -13,9 +13,8 @@ apiUrl: "API_URL",
 apiKey: "API_KEY",
 customApi: "http://localhost:7070/api"
 
-# Back into the root folder:
-cd
-cd analytics-challenge
+# Back into the analytics-challenge folder:
+cd ../.. 
 
 # Run docker compose:
 docker-compose up -d --build
